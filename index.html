@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello Handlebars</title>
+	<style>
+		.redText{color:red;}
+		.blueText{color:blue;}
+		.greenText{color:green;}
+	</style>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
+
+</head>
+<body>
+	<div id="quoteData"></div>
+
+<script id="quote-template" type="text/x-handlebars-template">
+	<h3>Favourite {{name}} quotes</h3>
+	<ol>
+	{{#each quotes}}
+	<li>{{quote}}
+	{{/each}}	
+	</o>
+	{{{yogibio}}}<br /><br />
+	{{changeColor "Make my text red" color="blue "}}<br />
+	{{makeLink "Yoggi Berra Museum" "http://yogiberramuseum.org/"}}<br /><br /> 
+	{{sayHello}}
+
+</script>
+<script type="text/javascript">
+	var quoteInfo = document.getElementById("quote-template").innerHTML
+	var template =Handlebars.compile(quoteInfo)
+	Handlebars.registerHelper("makeLink", function(text,url){
+		// Create own helper
+		// Escape past string
+		text=Handlebars.Utils.escapeExpression(text);
+		url=Handlebars.Utils.escapeExpression(url);
+
+		var theLink = '<a href= "'+url+ '">' +text+ '</a>';
+		return new Handlebars.SafeString(theLink); 
+	})
+
+	Handlebars.registerHelper('changeColor',function(text,options){
+		text=Handlebars.Utils.escapeExpression(text);
+		if (options.hash.color === 'red'){
+			return new Handlebars.SafeString("<span class='redText'>" + text + "</span>")
+		}
+		else if (options.hash.color === 'blue'){
+			return new Handlebars.SafeString("<span class='blueText'>" + text + "</span>")
+		}
+		else {
+			return new Handlebars.SafeString("<span class='greenText'>" + text + "</span>")
+		}
+	})
+	Handlebars.registerHelper('sayHello',function(options){
+		switch(options.data.lang){
+			case "spanish":
+			return "Hola";
+			break;
+			case "french":
+			return "Bonjour";
+			break;
+			default:
+			return "Hello";
+
+		}
+	});
+
+
+	var quoteData = template({
+		name:"Yogi Bear",
+		quotes:[
+			{quote:"1"},
+			{quote:"2"},
+			{quote:"3"}
+		],
+		yogibio: '<i>Lawarence Peter is a yogi bear</i>'
+	},{data:{
+		lang: "spanish"
+	}
+});
+
+
+	document.getElementById("quoteData").innerHTML +=quoteData;
+
+</script>
+</body>
+</html>
